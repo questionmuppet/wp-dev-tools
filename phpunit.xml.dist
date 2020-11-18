@@ -12,10 +12,10 @@
     </extensions>
 	<testsuites>
 		<testsuite name="unit">
-			<directory prefix="" suffix="-Test.php">./tests/Unit/</directory>
+			<directory prefix="" suffix="_Test.php">./tests/Unit/</directory>
 		</testsuite>
 		<testsuite name="integration">
-			<directory prefix="" suffix="-IntegrationTest.php">./tests/Integration/</directory>
+			<directory prefix="" suffix="_IntegrationTest.php">./tests/Integration/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>
