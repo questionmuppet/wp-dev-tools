@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<phpunit
+	bootstrap="tests/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	>
+    <extensions>
+        <extension class="Wp_Dev_Tools\Tests\TestCases\Hooks\BypassFinalHook"/>
+    </extensions>
+	<testsuites>
+		<testsuite name="unit">
+			<directory prefix="" suffix="-Test.php">./tests/Unit/</directory>
+		</testsuite>
+		<testsuite name="integration">
+			<directory prefix="" suffix="-IntegrationTest.php">./tests/Integration/</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
