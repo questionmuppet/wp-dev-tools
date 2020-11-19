@@ -21,7 +21,19 @@ final class File_Test extends TestCase
      *   T E S T S
      * -------------
      */
-    
+
+    public function test_Path_is_filepath_passed_in_constructor(): void
+    {
+        $file = new File(self::PATH);
+
+        $path = $file->path();
+
+        $this->assertEquals(self::PATH, $path);
+    }
+
+    /**
+     * @depends test_Path_is_filepath_passed_in_constructor
+     */
     public function test_Invalid_filepath_in_constructor_throws_InvalidArgumentException(): void
     {
         $this->expectException(\InvalidArgumentException::class);

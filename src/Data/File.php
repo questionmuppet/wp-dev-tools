@@ -31,10 +31,18 @@ final class File
     }
 
     /**
-     * Get full file contents
+     * Get file contents
      */
     public function contents(): string
     {
-        return file_get_contents($this->path);
+        return file_get_contents($this->path());
+    }
+
+    /**
+     * Get absolute file path
+     */
+    public function path(): string
+    {
+        return $this->path;
     }
 }
