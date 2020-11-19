@@ -1,0 +1,79 @@
+<?php
+declare(strict_types=1);
+
+namespace Wp_Dev_Tools\Tests\Integration\Package_Details\Generators;
+
+use PHPUnit\Framework\TestCase;
+use Wp_Dev_Tools\Data\File;
+use Wp_Dev_Tools\Data\Url;
+use Wp_Dev_Tools\Package_Details\Generators\PluginDetailsGenerator;
+
+final class PluginDetailsGenerator_IntegrationTest extends TestCase
+{
+    /**
+     * -----------------
+     *   F I X T U R E
+     * -----------------
+     */
+
+    const PLUGIN_FILE = WP_DEV_TOOLS_TEST_DIR . '/@files/my-plugin.php';
+    const README_FILE = WP_DEV_TOOLS_TEST_DIR . '/@files/readme.txt';
+    const URL = 'https://www.example.org';
+
+    const HEADERS = [
+        'name' => 'My Plugin',
+        'homepage' => 'https://www.example.org/my-plugin',
+        'version' => '1.0.0',
+        'requires' => '5.4',
+        'requires_php' => '7.4',
+        'author' => 'questionmuppet',
+        'author_profile' => 'https://www.example.org/questionmuppet',
+    ];
+
+    const SECTIONS = [
+        'Description' => "Here is a description of this nifty plugin.\r\n\r\nThere are several lines in it.",
+        'Installation' => "1. Upload the plugin\r\n2. Activate the plugin\r\n3. Collect underpants\r\n4. ???\r\n5. Profit",
+    ];
+
+    private File $source;
+    private File $readme;
+    private Url $url;
+
+    public function setUp(): void
+    {
+        $this->source = new File(self::PLUGIN_FILE);
+        $this->readme = new File(self::README_FILE);
+        $this->url = new Url(self::URL);
+    }
+
+    /**
+     * -------------
+     *   T E S T S
+     * -------------
+     */
+
+    public function test_Details_contains_all_headers_from_plugin_input_file(): void
+    {
+        $generator = new PluginDetailsGenerator($this->source, $this->url, $this->readme);
+
+        $details = $generator->details();
+
+        foreach (self::HEADERS as $key => $value)
+        {
+            $this->assertEquals($value, $details[$key] ?? '', "Failed to assert that a header with key '$key' contained the expected value.");
+        }
+    }
+
+    public function test_Details_contains_all_sections_from_readme_input_file(): void
+    {
+        $generator = new PluginDetailsGenerator($this->source, $this->url, $this->readme);
+
+        $details = $generator->details();
+
+        foreach (self::SECTIONS as $key => $value)
+        {
+            $this->assertArrayHasKey($key, $details['sections'], "Failed to assert that the details contained a doc section with key '$key'.");
+            $this->assertEquals($value, $details['sections'][$key] ?? '', "Failed to assert that a section with key '$key' contained the expected content.");
+        }
+    }
+}
