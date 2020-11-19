@@ -7,13 +7,17 @@
 
 namespace Wp_Dev_Tools\Package_Details\Generators;
 
+use Wp_Dev_Tools\Data\File;
+use Wp_Dev_Tools\Data\Url;
+
 abstract class PackageDetailsGenerator
 {
     /**
-     * Input file paths
+     * Inputs
      */
-    private string $source_path;
-    private string $readme_path;
+    private File $source;
+    private File $readme;
+    private Url $url;
 
     /**
      * Package details
@@ -23,42 +27,11 @@ abstract class PackageDetailsGenerator
     /**
      * Constructor
      */
-    public function __construct(array $params)
+    public function __construct(File $source, Url $url, File $readme = null)
     {
-        $this->set_source_path($params['source'] ?? '');
-        $this->set_readme_path($params['readme'] ?? '');
-    }
-    
-    /**
-     * Set the source path
-     */
-    private function set_source_path(string $path): void
-    {
-        if (!file_exists($path))
-        {
-            throw new \InvalidArgumentException(sprintf(
-                "Invalid source file provided while trying to instantiate a %s. No file found at path '%s'.",
-                get_called_class(),
-                $path
-            ));
-        }
-        $this->source_path = $path;
-    }
-    
-    /**
-     * Set the readme path
-     */
-    private function set_readme_path(string $path): void
-    {
-        if (strlen($path) && !file_exists($path))
-        {
-            throw new \InvalidArgumentException(sprintf(
-                "Invalid readme file provided while trying to instantiate a %s. No file found at path '%s'.",
-                get_called_class(),
-                $path
-            ));
-        }
-        $this->readme_path = $path;
+        $this->source = $source;
+        $this->url = $url;
+        is_null($readme) || $this->readme = $readme;
     }
 
     /**
@@ -77,8 +50,18 @@ abstract class PackageDetailsGenerator
         if (!isset($this->details))
         {
             $this->details = $this->generate_data();
+            $this->details['download_url'] = $this->download_url();
+            $this->details['last_updated'] = time();
         }
         return $this->details;
+    }
+    
+    /**
+     * Get download url
+     */
+    private function download_url(): string
+    {
+        return (string) $this->url;
     }
 
     /**
@@ -91,7 +74,15 @@ abstract class PackageDetailsGenerator
      */
     protected function source(): string
     {
-        return file_get_contents($this->source_path);
+        return $this->source->contents();
+    }
+
+    /**
+     * Get basename of the source file
+     */
+    protected function basename(): string
+    {
+        return basename($this->source->path(), '.php');
     }
 
     /**
@@ -99,8 +90,14 @@ abstract class PackageDetailsGenerator
      */
     protected function readme(): string
     {
-        return strlen($this->readme_path)
-            ? file_get_contents($this->readme_path)
-            : '';
+        return $this->has_readme() ? $this->readme->contents() : '';
+    }
+
+    /**
+     * Check for a readme input file
+     */
+    private function has_readme(): bool
+    {
+        return isset($this->readme);
     }
 }
