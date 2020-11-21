@@ -31,8 +31,16 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
     ];
 
     const SECTIONS = [
-        'Description' => "Here is a description of this nifty plugin.\r\n\r\nThere are several lines in it.",
-        'Installation' => "1. Upload the plugin\r\n2. Activate the plugin\r\n3. Collect underpants\r\n4. ???\r\n5. Profit",
+        'Description' =>
+            "Here is a description of this nifty plugin." . PHP_EOL .
+            PHP_EOL .
+            "There are several lines in it.",
+        'Installation' =>
+            "1. Upload the plugin" . PHP_EOL .
+            "2. Activate the plugin" . PHP_EOL .
+            "3. Collect underpants" . PHP_EOL .
+            "4. ???" . PHP_EOL .
+            "5. Profit",
     ];
 
     private File $source;
@@ -54,7 +62,7 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
 
     public function test_Details_contains_all_headers_from_plugin_input_file(): void
     {
-        $generator = new PluginDetailsGenerator($this->source, $this->url, $this->readme);
+        $generator = new PluginDetailsGenerator($this->source, $this->url);
 
         $details = $generator->details();
 
@@ -64,6 +72,9 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
         }
     }
 
+    /**
+     * @depends test_Details_contains_all_headers_from_plugin_input_file
+     */
     public function test_Details_contains_all_sections_from_readme_input_file(): void
     {
         $generator = new PluginDetailsGenerator($this->source, $this->url, $this->readme);

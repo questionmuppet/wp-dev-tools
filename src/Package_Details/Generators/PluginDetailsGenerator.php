@@ -73,6 +73,8 @@ final class PluginDetailsGenerator extends PackageDetailsGenerator
     {
         $pattern = '/^\s*==([^=]+)==\s*$/m';
         $matches = preg_split($pattern, $this->readme(), null, PREG_SPLIT_DELIM_CAPTURE);
+
+        $sections = [];
         for ($i = 1; $i < count($matches); $i += 2)
         {
             $key = trim($matches[$i]);
