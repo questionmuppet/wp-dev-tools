@@ -37,9 +37,10 @@ abstract class PackageDetailsGenerator
     /**
      * Get package-details as encoded JSON
      */
-    public function json(): string
+    public function json(?bool $pretty_print = null): string
     {
-        return json_encode($this->details());
+        $opts = $pretty_print ? JSON_PRETTY_PRINT : 0;
+        return json_encode($this->details(), $opts);
     }
 
     /**

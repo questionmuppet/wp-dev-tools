@@ -163,6 +163,21 @@ final class PackageDetailsGenerator_Test extends TestCase
 
         $json = $generator->json();
         
-        $this->assertJsonStringEqualsJsonString(json_encode($details), $json);       
+        $this->assertJsonStringEqualsJsonString(json_encode($details), $json);
+    }
+
+    /**
+     * @depends test_Json_is_encoded_json_string_comprised_of_details_data
+     */
+    public function test_Json_can_be_pretty_printed(): void
+    {
+        $generator = $this->createMockGenerator();
+        $generator->method('generate_data')->willReturn(self::DATA);
+        $details = $generator->details();
+
+        $json = $generator->json(true);
+        
+        $this->assertJsonStringEqualsJsonString(json_encode($details), $json);
+        $this->assertMatchesRegularExpression('/^\s+"key_1": "One",$/m', $json);
     }
 }
