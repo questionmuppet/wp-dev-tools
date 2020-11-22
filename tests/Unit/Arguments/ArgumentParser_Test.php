@@ -6,6 +6,7 @@ namespace Wp_Dev_Tools\Tests\Unit\Arguments;
 use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Arguments\ArgumentParser;
 use GetOpt\Option;
+use GetOpt\Command;
 use GetOpt\Operand;
 
 final class ArgumentParser_Test extends TestCase
@@ -69,10 +70,16 @@ final class ArgumentParser_Test extends TestCase
         $this->assertEquals(self::NARF, $value);
     }
 
-    /* public function test_Can_define_and_retrieve_command(): void
+    public function test_Can_define_and_retrieve_command(): void
     {
+        $commands = [Command::create('narf','strlen')];
+        $parser = new ArgumentParser(['commands' => $commands]);
+        $parser->parse('narf');
 
-    } */
+        $command = $parser->command();
+        $this->assertInstanceOf(Command::class, $command);
+        $this->assertEquals('narf', $command->getName());
+    }
     
     /**
      * ---------------

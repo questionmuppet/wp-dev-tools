@@ -9,6 +9,7 @@ namespace Wp_Dev_Tools\Arguments;
 
 use GetOpt\GetOpt;
 use GetOpt\Option;
+use GetOpt\CommandInterface;
 use GetOpt\ArgumentException;
 use GetOpt\ArgumentException\Invalid;
 
@@ -50,10 +51,12 @@ final class ArgumentParser
 
         // Extract argument definitions
         $options = $this->collate_options($args['options'] ?? []);
+        $commands = $args['commands'] ?? [];
         $operands = $args['operands'] ?? [];
 
         // Invoke GetOpt
         $this->getopt = new GetOpt($options, $this->getopt_settings());
+        $this->getopt->addCommands($commands);
         $this->getopt->addOperands($operands);
     }
 
@@ -120,6 +123,14 @@ final class ArgumentParser
     public function option(string $key)
     {
         return $this->getopt->getOption($key);
+    }
+
+    /**
+     * Get the command passed to the script
+     */
+    public function command(): ?CommandInterface
+    {
+        return $this->getopt->getCommand();
     }
 
     /**
