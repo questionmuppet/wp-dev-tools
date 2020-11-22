@@ -216,14 +216,19 @@ final class ArgumentParser
      */
 
     /**
-     * Collate common and user-provided options and sort
+     * Collate common and user-provided options and sort by short form
      * 
      * @return Option[]
      */
     public function collate_options(array $user_opts): array
     {
-        $opts = array_replace($this->common_opts(), $user_opts);
-        ksort($opts);
+        $opts = array_merge($this->common_opts(), $user_opts);
+        usort(
+            $opts,
+            function(Option $a, Option $b) {
+                return strcmp($a->getShort(), $b->getShort());
+            }
+        );
         return $opts;
     }
 
@@ -235,8 +240,8 @@ final class ArgumentParser
     private function common_opts(): array
     {
         return [
-            'h' => Option::create('h', 'help')->setDescription('Show this help and quit'),
-            'v' => Option::create('v', 'version')->setDescription('Show version information and quit'),
+            Option::create('h', 'help')->setDescription('Show this help and quit'),
+            Option::create('v', 'version')->setDescription('Show version information and quit'),
         ];
     }
 }
