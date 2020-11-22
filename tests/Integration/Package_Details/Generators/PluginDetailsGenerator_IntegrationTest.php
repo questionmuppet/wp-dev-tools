@@ -45,13 +45,11 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
 
     private File $source;
     private File $readme;
-    private Url $url;
 
     public function setUp(): void
     {
         $this->source = new File(self::PLUGIN_FILE);
         $this->readme = new File(self::README_FILE);
-        $this->url = new Url(self::URL);
     }
 
     /**
@@ -62,7 +60,7 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
 
     public function test_Details_contains_all_headers_from_plugin_input_file(): void
     {
-        $generator = new PluginDetailsGenerator($this->source, $this->url);
+        $generator = new PluginDetailsGenerator($this->source);
 
         $details = $generator->details();
 
@@ -77,7 +75,7 @@ final class PluginDetailsGenerator_IntegrationTest extends TestCase
      */
     public function test_Details_contains_all_sections_from_readme_input_file(): void
     {
-        $generator = new PluginDetailsGenerator($this->source, $this->url, $this->readme);
+        $generator = new PluginDetailsGenerator($this->source, ['readme' => $this->readme]);
 
         $details = $generator->details();
 

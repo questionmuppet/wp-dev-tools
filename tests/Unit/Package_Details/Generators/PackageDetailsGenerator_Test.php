@@ -53,11 +53,11 @@ final class PackageDetailsGenerator_Test extends TestCase
         $this->url->method('__toString')->willReturn(self::URL);
     }
 
-    private function createMockGenerator(): PackageDetailsGenerator
+    private function createMockGenerator(array $extra_sources = []): PackageDetailsGenerator
     {
         return $this->getMockForAbstractClass(
             PackageDetailsGenerator::class,
-            [$this->source, $this->url, $this->readme],
+            [$this->source, $extra_sources],
             '',
             true,
             true,
@@ -74,7 +74,7 @@ final class PackageDetailsGenerator_Test extends TestCase
 
     public function test_Child_class_can_access_source_file_contents(): void
     {
-        $generator = new Concrete_Generator($this->source, $this->url);
+        $generator = new Concrete_Generator($this->source);
 
         $contents = $generator->_source();
 
@@ -83,7 +83,9 @@ final class PackageDetailsGenerator_Test extends TestCase
 
     public function test_Child_class_can_access_readme_file_contents(): void
     {
-        $generator = new Concrete_Generator($this->source, $this->url, $this->readme);
+        $generator = new Concrete_Generator($this->source, [
+            'readme' => $this->readme
+        ]);
 
         $contents = $generator->_readme();
 
@@ -95,7 +97,7 @@ final class PackageDetailsGenerator_Test extends TestCase
      */
     public function test_Readme_file_contents_is_empty_string_when_no_readme_provided(): void
     {
-        $generator = new Concrete_Generator($this->source, $this->url);
+        $generator = new Concrete_Generator($this->source);
 
         $contents = $generator->_readme();
 
@@ -105,7 +107,7 @@ final class PackageDetailsGenerator_Test extends TestCase
     public function test_Basename_is_basename_of_source_file_without_extension(): void
     {
         $this->source->method('path')->willReturn(sprintf('path/to/%s.php', self::SLUG));
-        $generator = new Concrete_Generator($this->source, $this->url);
+        $generator = new Concrete_Generator($this->source);
 
         $basename = $generator->_basename();
 
@@ -132,14 +134,26 @@ final class PackageDetailsGenerator_Test extends TestCase
         }
     }
 
-    public function test_Details_contains_download_url_field(): void
+    public function test_Details_contains_download_url_field_when_url_provided(): void
     {
-        $generator = $this->createMockGenerator();
+        $generator = $this->createMockGenerator(['url' => $this->url]);
 
         $details = $generator->details();
 
         $this->assertArrayHasKey('download_url', $details);
         $this->assertEquals(self::URL, $details['download_url']);
+    }
+
+    /**
+     * @depends test_Details_contains_download_url_field_when_url_provided
+     */
+    public function test_Details_contains_no_download_url_field_when_url_omitted(): void
+    {
+        $generator = $this->createMockGenerator();
+
+        $details = $generator->details();
+
+        $this->assertArrayNotHasKey('download_url', $details);
     }
 
     public function test_Details_contains_last_updated_field_with_current_timestamp(): void

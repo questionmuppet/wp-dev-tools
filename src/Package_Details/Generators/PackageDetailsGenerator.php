@@ -16,8 +16,8 @@ abstract class PackageDetailsGenerator
      * Inputs
      */
     private File $source;
-    private File $readme;
-    private Url $url;
+    private ?File $readme;
+    private ?Url $url;
 
     /**
      * Package details
@@ -27,11 +27,11 @@ abstract class PackageDetailsGenerator
     /**
      * Constructor
      */
-    public function __construct(File $source, Url $url, File $readme = null)
+    public function __construct(File $source, array $extra_sources = [])
     {
         $this->source = $source;
-        $this->url = $url;
-        is_null($readme) || $this->readme = $readme;
+        $this->readme = $extra_sources['readme'] ?? null;
+        $this->url = $extra_sources['url'] ?? null;
     }
 
     /**
@@ -51,18 +51,10 @@ abstract class PackageDetailsGenerator
         if (!isset($this->details))
         {
             $this->details = $this->generate_data();
-            $this->details['download_url'] = $this->download_url();
             $this->details['last_updated'] = time();
+            $this->has_download_url() && $this->details['download_url'] = $this->download_url();
         }
         return $this->details;
-    }
-    
-    /**
-     * Get download url
-     */
-    private function download_url(): string
-    {
-        return (string) $this->url;
     }
 
     /**
@@ -84,6 +76,22 @@ abstract class PackageDetailsGenerator
     protected function basename(): string
     {
         return basename($this->source->path(), '.php');
+    }
+    
+    /**
+     * Get download url
+     */
+    private function download_url(): string
+    {
+        return $this->has_download_url() ? (string) $this->url : '';
+    }
+
+    /**
+     * Check for download url
+     */
+    private function has_download_url(): bool
+    {
+        return isset($this->url);
     }
 
     /**
