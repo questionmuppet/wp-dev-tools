@@ -79,13 +79,18 @@ if ($parser->has_output())
 $output = $parser->operand('output-file');
 $prettify = $parser->option('pretty-print');
 $source = new File($parser->operand('source-file'));
-$readme = $parser->option('readme');
+
+$url = $parser->option('u');
+$readme = $parser->option('r');
 $extras = array_filter([
-    'url' => new Url($parser->option('u')),
+    'url' => $url ? new Url($url) : null,
     'readme' => $readme ? new File($readme) : null,
 ]);
 
 $generator = new PluginDetailsGenerator($source, $extras);
 
 echo "Writing file to '$output.'";
+if (!is_dir(dirname($output))) {
+    mkdir(dirname($output), 0777, true);
+}
 file_put_contents($output, $generator->json($prettify));
