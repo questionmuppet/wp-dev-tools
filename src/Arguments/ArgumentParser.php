@@ -164,7 +164,7 @@ final class ArgumentParser
         {
             if (!$this->has_information_message())
             {
-                error_log($e->getMessage() . PHP_EOL);
+                error_log($e->getMessage());
                 $this->message = PHP_EOL . $this->getopt->getHelpText();
                 $this->error = $e instanceof Invalid ? self::INVALID_ARGUMENT : self::SYNTAX_ERROR;
             }
