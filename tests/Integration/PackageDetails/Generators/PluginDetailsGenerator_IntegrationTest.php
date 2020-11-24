@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Wp_Dev_Tools\Tests\Integration\Package_Details\Generators;
+namespace Wp_Dev_Tools\Tests\Integration\PackageDetails\Generators;
 
 use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
-use Wp_Dev_Tools\Package_Details\Generators\PluginDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\PluginDetailsGenerator;
 
 final class PluginDetailsGenerator_IntegrationTest extends TestCase
 {

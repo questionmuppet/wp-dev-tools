@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Wp_Dev_Tools\Tests\Unit\Package_Details\Generators;
+namespace Wp_Dev_Tools\Tests\Unit\PackageDetails\Generators;
 
 use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
-use Wp_Dev_Tools\Package_Details\Generators\PackageDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\PackageDetailsGenerator;
 
 /**
  * Concrete implementation of abstract

@@ -5,7 +5,7 @@
  * Extracts package-details data from plugin and theme files
  */
 
-namespace Wp_Dev_Tools\Package_Details\Generators;
+namespace Wp_Dev_Tools\PackageDetails\Generators;
 
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;

@@ -5,7 +5,7 @@ namespace Wp_Dev_Tools\Tests\Unit\Controllers;
 
 use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Arguments\ArgumentParser;
-use Wp_Dev_Tools\Package_Details\Generators\PackageDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\PackageDetailsGenerator;
 use Wp_Dev_Tools\Controllers\CreateDetailsController;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;

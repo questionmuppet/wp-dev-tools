@@ -7,7 +7,7 @@
 
 namespace Wp_Dev_Tools\Controllers;
 
-use Wp_Dev_Tools\Package_Details\Generators\PluginDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\PluginDetailsGenerator;
 use Wp_Dev_Tools\Data\File;
 
 final class CreatePluginDetailsController extends CreateDetailsController

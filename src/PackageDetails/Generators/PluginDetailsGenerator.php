@@ -5,7 +5,7 @@
  * Generates package-details data for a plugin
  */
 
-namespace Wp_Dev_Tools\Package_Details\Generators;
+namespace Wp_Dev_Tools\PackageDetails\Generators;
 
 final class PluginDetailsGenerator extends PackageDetailsGenerator
 {

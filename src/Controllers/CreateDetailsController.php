@@ -10,7 +10,7 @@ namespace Wp_Dev_Tools\Controllers;
 use Wp_Dev_Tools\Arguments\ArgumentParser;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
-use Wp_Dev_Tools\Package_Details\Generators\PackageDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\PackageDetailsGenerator;
 
 abstract class CreateDetailsController implements ControllerInterface
 {
