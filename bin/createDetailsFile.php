@@ -1,17 +1,16 @@
 <?php
 /**
- * wpPackageDetails
+ * createDetailsFile.php
  * 
  * Creates a package-details file in JSON format from WordPress plugin and theme files
  */
 
-use Wp_Dev_Tools\Arguments\ArgumentParser;
 use GetOpt\GetOpt;
 use GetOpt\Option;
 use GetOpt\Operand;
-use Wp_Dev_Tools\Package_Details\Generators\PluginDetailsGenerator;
-use Wp_Dev_Tools\Data\File;
-use Wp_Dev_Tools\Data\Url;
+use GetOpt\Command;
+use Wp_Dev_Tools\Controllers;
+use Wp_Dev_Tools\Arguments\ArgumentParser;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
@@ -49,48 +48,46 @@ $operands = [
         ->setDescription('Relative path to output file. When omitted defaults to "package-details.json".')
         ->setDefaultValue('package-details.json'),
 ];
+$commands = [
+    Command::create('plugin', Controllers\CreatePluginDetailsController::class)
+        ->setShortDescription('Create a package-details file for a plugin release. Try "plugin -h" for more information.')
+        ->setDescription("Create a package-details file from source files.\n\nA plugin source file is required to read headers from. Readme.txt and download_url can be provided optionally.")
+        ->addOptions($options)
+        ->addOperands($operands),
+];
 
 /**
  * Parse command-line arguments
  */
-$args = [
-    'options' => $options,
-    'operands' => $operands,
-];
-$settings = [
+$args = new ArgumentParser(['commands' => $commands], [
     'script' => SCRIPT,
     'version' => VERSION,
-];
-$parser = new ArgumentParser($args, $settings);
-$parser->parse();
-
-/**
- * Exit with error or information request
- */
-if ($parser->has_output())
-{
-    echo $parser->output();
-    exit($parser->error_code());
-}
-
-/**
- * Write file
- */
-$output = $parser->operand('output-file');
-$prettify = $parser->option('pretty-print');
-$source = new File($parser->operand('source-file'));
-
-$url = $parser->option('u');
-$readme = $parser->option('r');
-$extras = array_filter([
-    'url' => $url ? new Url($url) : null,
-    'readme' => $readme ? new File($readme) : null,
 ]);
+$args->parse();
 
-$generator = new PluginDetailsGenerator($source, $extras);
-
-echo "Writing file to '$output.'";
-if (!is_dir(dirname($output))) {
-    mkdir(dirname($output), 0777, true);
+/**
+ * Exit on error
+ */
+if ($args->has_error())
+{
+    echo $args->error_message() . PHP_EOL . PHP_EOL;
+    echo $args->information_message();
+    exit($args->error_code());
 }
-file_put_contents($output, $generator->json($prettify));
+
+/**
+ * Display information request and exit
+ */
+if ($args->is_information_request() || !$args->has_command())
+{
+    echo $args->information_message();
+    exit(0);
+}
+
+/**
+ * Execute requested command
+ */
+printf("Writing file to %s", $args->operand('output-file'));
+$classname = $args->command()->getHandler();
+$controller = new $classname();
+$controller->execute($args);
