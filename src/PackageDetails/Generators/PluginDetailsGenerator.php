@@ -7,7 +7,7 @@
 
 namespace Wp_Dev_Tools\PackageDetails\Generators;
 
-final class PluginDetailsGenerator extends PackageDetailsGenerator
+final class PluginDetailsGenerator extends DetailsGenerator
 {
     /**
      * Plugin header map
@@ -23,64 +23,29 @@ final class PluginDetailsGenerator extends PackageDetailsGenerator
     ];
 
     /**
-     * Generate details data
+     * Get map of json keys => header keys
      */
-    protected function generate_data(): array
+    protected function header_map(): array
     {
-        $data = array_merge(
-            $this->headers(),
-            [
-                'slug' => $this->basename(),
-                'sections' => $this->section_data(),
-            ]
-        );
-        return array_filter($data);
+        return $this->header_map;
     }
 
     /**
-     * Generate plugin headers
+     * Generate plugin-specific data
      */
-    private function headers(): array
+    protected function additional_data(): array
     {
-        $headers = [];
-        foreach ($this->header_map as $key => $header)
-        {
-            $headers[$key] = $this->extract_header($header);
-        }
-        return $headers;
+        return [
+            'slug' => $this->slug(),
+            'sections' => $this->section_data(),
+        ];
     }
 
     /**
-     * Extract header value from the plugin file
-     * 
-     * @see https://developer.wordpress.org/reference/functions/get_file_data/
+     * Get plugin slug from source file name
      */
-    private function extract_header(string $key): string
+    protected function slug(): string
     {
-        $pattern = sprintf(
-            '/^[ \t\/*#@]*%s:(.*)$/mi',
-            preg_quote($key, '/')
-        );
-        return preg_match($pattern, $this->source(), $matches)
-            ? trim($matches[1])
-            : '';
-    }
-
-    /**
-     * Generate section data
-     */
-    private function section_data(): array
-    {
-        $pattern = '/^\s*==([^=]+)==\s*$/m';
-        $matches = preg_split($pattern, $this->readme(), null, PREG_SPLIT_DELIM_CAPTURE);
-
-        $sections = [];
-        for ($i = 1; $i < count($matches); $i += 2)
-        {
-            $key = trim($matches[$i]);
-            $content = trim($matches[$i + 1]);
-            $sections[$key] = $content;
-        }
-        return $sections;
+        return $this->basename();
     }
 }

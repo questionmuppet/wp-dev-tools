@@ -5,7 +5,7 @@ namespace Wp_Dev_Tools\Tests\Unit\Controllers;
 
 use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Arguments\ArgumentParser;
-use Wp_Dev_Tools\PackageDetails\Generators\PackageDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\DetailsGenerator;
 use Wp_Dev_Tools\Controllers\CreateDetailsController;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
@@ -37,13 +37,13 @@ final class CreateDetailsController_Test extends TestCase
         'output-file' => self::OUTPUT,
     ];
 
-    private PackageDetailsGenerator $generator;
+    private DetailsGenerator $generator;
     private CreateDetailsController $controller;
 
     public function setUp(): void
     {
         self::deleteOutputArtifacts();
-        $this->generator = $this->createMock(PackageDetailsGenerator::class);
+        $this->generator = $this->createMock(DetailsGenerator::class);
         $this->generator->method('json')->will($this->returnValueMap([
             [false, self::JSON],
             [true, self::PRETTY_JSON],

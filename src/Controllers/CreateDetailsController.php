@@ -10,7 +10,7 @@ namespace Wp_Dev_Tools\Controllers;
 use Wp_Dev_Tools\Arguments\ArgumentParser;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
-use Wp_Dev_Tools\PackageDetails\Generators\PackageDetailsGenerator;
+use Wp_Dev_Tools\PackageDetails\Generators\DetailsGenerator;
 
 abstract class CreateDetailsController implements ControllerInterface
 {
@@ -32,7 +32,7 @@ abstract class CreateDetailsController implements ControllerInterface
     /**
      * Create a details generator object
      */
-    abstract protected function generator(File $source, array $extras): PackageDetailsGenerator;
+    abstract protected function generator(File $source, array $extras): DetailsGenerator;
 
     /**
      * Write content to a file, creating folders as necessary
