@@ -9,7 +9,7 @@ namespace Wp_Dev_Tools\Arguments;
 
 use GetOpt\GetOpt;
 use GetOpt\Option;
-use GetOpt\CommandInterface;
+use GetOpt\Command;
 use GetOpt\ArgumentException;
 use GetOpt\ArgumentException\Invalid;
 
@@ -22,10 +22,10 @@ final class ArgumentParser
     const INVALID_ARGUMENT = 2;
 
     /**
-     * Output
+     * Parse error
      */
-    private string $message = '';
-    private int $error = 0;
+    private string $error_message = '';
+    private int $error_code = 0;
 
     /**
      * Settings
@@ -54,7 +54,7 @@ final class ArgumentParser
         $commands = $args['commands'] ?? [];
         $operands = $args['operands'] ?? [];
 
-        // Invoke GetOpt
+        // Set up GetOpt
         $this->getopt = new GetOpt($options, $this->getopt_settings());
         $this->getopt->addCommands($commands);
         $this->getopt->addOperands($operands);
@@ -80,69 +80,7 @@ final class ArgumentParser
             GetOpt::SETTING_STRICT_OPERANDS => $this->settings['strict_operands'],
         ];
     }
-
-    /**
-     * -----------------
-     *   O U T P U T S
-     * -----------------
-     */
-
-    /**
-     * Check for output generated during parsing
-     */
-    public function has_output(): bool
-    {
-        return strlen($this->output());
-    }
-
-    /**
-     * Get the parse message (error or info)
-     * 
-     * @return string Message generated during the parse, or empty string
-     */
-    public function output(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * Get error code
-     * 
-     * @return int Error code if encountered, 0 for successful parsing
-     */
-    public function error_code(): int
-    {
-        return $this->error;
-    }
-
-    /**
-     * Get an option value
-     * 
-     * @return mixed
-     */
-    public function option(string $key)
-    {
-        return $this->getopt->getOption($key);
-    }
-
-    /**
-     * Get the command passed to the script
-     */
-    public function command(): ?CommandInterface
-    {
-        return $this->getopt->getCommand();
-    }
-
-    /**
-     * Get a positional parameter value
-     * 
-     * @return mixed
-     */
-    public function operand(string $key)
-    {
-        return $this->getopt->getOperand($key);
-    }
-
+    
     /**
      * -------------
      *   P A R S E
@@ -162,45 +100,110 @@ final class ArgumentParser
         }
         catch (ArgumentException $e)
         {
-            if (!$this->has_information_message())
+            if (!$this->is_information_request())
             {
-                error_log($e->getMessage());
-                $this->message = PHP_EOL . $this->getopt->getHelpText();
-                $this->error = $e instanceof Invalid ? self::INVALID_ARGUMENT : self::SYNTAX_ERROR;
+                $this->error_message = 'Error: ' . $e->getMessage();
+                $this->error_code = $e instanceof Invalid ? self::INVALID_ARGUMENT : self::SYNTAX_ERROR;
             }
-        }
-        finally
-        {
-            $this->message .= $this->information_message();
         }
     }
 
     /**
-     * Check for a non-error information message
+     * -----------------
+     *   O U T P U T S
+     * -----------------
      */
-    private function has_information_message(): bool
+    
+    /**
+     * Get error message
+     */
+    public function error_message(): string
+    {
+        return $this->error_message;
+    }
+
+    /**
+     * Check for error
+     */
+    public function has_error(): bool
+    {
+        return (bool) $this->error_code();
+    }
+
+    /**
+     * Get error code
+     * 
+     * @return int Error code if encountered, 0 for successful parsing
+     */
+    public function error_code(): int
+    {
+        return $this->error_code;
+    }
+
+    /**
+     * Get an option value
+     * 
+     * @return mixed
+     */
+    public function option(string $key)
+    {
+        return $this->getopt->getOption($key);
+    }
+
+    /**
+     * Check for a valid command
+     */
+    public function has_command(): bool
+    {
+        return !is_null($this->command());
+    }
+
+    /**
+     * Get the command passed to the script
+     */
+    public function command(): ?Command
+    {
+        return $this->getopt->getCommand();
+    }
+
+    /**
+     * Get a positional parameter value
+     * 
+     * @return mixed
+     */
+    public function operand(string $key)
+    {
+        return $this->getopt->getOperand($key);
+    }
+
+    /**
+     * -------------------------
+     *   I N F O   &   H E L P
+     * -------------------------
+     */
+
+    /**
+     * Check if user requested information
+     */
+    public function is_information_request(): bool
     {
         return $this->option('help') || $this->option('version');
     }
 
     /**
-     * Get the output for an information command
+     * Get requested information message or help text
      */
-    private function information_message(): string
+    public function information_message(): string
     {
-        if ($this->option('help')) {
-            return $this->getopt->getHelpText();
-        }
-        if ($this->option('version')) {
-            return $this->version_message();
-        }
-        return '';
+        return $this->option('version')
+            ? $this->version_text()
+            : $this->getopt->getHelpText();
     }
     
     /**
-     * Get version message
+     * Get version information
      */
-    private function version_message(): string
+    private function version_text(): string
     {
         return sprintf(
             "%s: v%s" . PHP_EOL,
@@ -220,7 +223,7 @@ final class ArgumentParser
      * 
      * @return Option[]
      */
-    public function collate_options(array $user_opts): array
+    private function collate_options(array $user_opts): array
     {
         $opts = array_merge($this->common_opts(), $user_opts);
         usort(

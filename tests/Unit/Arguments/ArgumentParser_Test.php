@@ -77,8 +77,21 @@ final class ArgumentParser_Test extends TestCase
         $parser->parse('narf');
 
         $command = $parser->command();
+        $this->assertTrue($parser->has_command());
         $this->assertInstanceOf(Command::class, $command);
         $this->assertEquals('narf', $command->getName());
+    }
+
+    /**
+     * @depends test_Can_define_and_retrieve_command
+     */
+    public function test_Has_command_returns_false_when_command_not_requested(): void
+    {
+        $commands = [Command::create('narf','strlen')];
+        $parser = new ArgumentParser(['commands' => $commands]);
+        $parser->parse('');
+
+        $this->assertFalse($parser->has_command());
     }
     
     /**
@@ -90,64 +103,53 @@ final class ArgumentParser_Test extends TestCase
     /**
      * @depends test_Can_define_and_retrieve_option
      * @depends test_Can_define_and_retrieve_operand
+     * @depends test_Can_define_and_retrieve_command
      */
-    public function test_Parser_has_no_output_or_error_on_successful_parsing_of_user_defined_arguments(): void
+    public function test_Has_no_error_when_argument_list_is_valid(): void
     {
         $options = [Option::create('x')];
         $parser = new ArgumentParser(['options' => $options]);
 
         $parser->parse('');
 
-        $this->assertFalse($parser->has_output());
+        $this->assertFalse($parser->has_error());
         $this->assertEquals(0, $parser->error_code());
     }
 
     /**
-     * @depends test_Parser_has_no_output_or_error_on_successful_parsing_of_user_defined_arguments
+     * @depends test_Has_no_error_when_argument_list_is_valid
      */
-    public function test_Parse_error_writes_exception_message_to_STDERR(): void
-    {
-        ini_set('error_log', self::$log_file);
-        $operands = [Operand::create('narf', Operand::REQUIRED)];
-        $parser = new ArgumentParser(['operands' => $operands]);
-        
-        $parser->parse('');
-
-        $this->assertStringContainsString('Operand narf is required', file_get_contents(self::$log_file));
-    }
-
-    /**
-     * @depends test_Parse_error_writes_exception_message_to_STDERR
-     */
-    public function test_Missing_argument_yields_error_message_output_and_SYNTAX_ERROR_error_code(): void
+    public function test_Missing_argument_yields_error_message_and_SYNTAX_ERROR_error_code(): void
     {
         $operands = [Operand::create('narf', Operand::REQUIRED)];
         $parser = new ArgumentParser(['operands' => $operands]);
         
         $parser->parse('');
 
-        $this->assertTrue($parser->has_output());
+        $this->assertTrue($parser->has_error());
         $this->assertEquals(ArgumentParser::SYNTAX_ERROR, $parser->error_code());
+        $this->assertStringContainsString('Operand narf is required', $parser->error_message());
     }
 
     /**
-     * @depends test_Parse_error_writes_exception_message_to_STDERR
+     * @depends test_Has_no_error_when_argument_list_is_valid
      */
-    public function test_Unexpected_argument_yields_error_message_output_and_SYNTAX_ERROR_error_code(): void
+    public function test_Unexpected_argument_yields_error_message_and_SYNTAX_ERROR_error_code(): void
     {
         $operands = [Operand::create('narf', Operand::REQUIRED)];
         $parser = new ArgumentParser(['operands' => $operands]);
         
         $parser->parse(self::NARF . ' Zort!');
 
-        $this->assertTrue($parser->has_output());
+        $this->assertTrue($parser->has_error());
         $this->assertEquals(ArgumentParser::SYNTAX_ERROR, $parser->error_code());
+        $this->assertStringContainsString('No more operands expected', $parser->error_message());
     }
 
     /**
-     * @depends test_Parse_error_writes_exception_message_to_STDERR
+     * @depends test_Has_no_error_when_argument_list_is_valid
      */
-    public function test_Invalid_argument_yields_error_message_output_and_INVALID_ARGUMENT_error_code(): void
+    public function test_Invalid_argument_yields_error_message_and_INVALID_ARGUMENT_error_code(): void
     {
         $operands = [
             Operand::create('narf', Operand::REQUIRED)->setValidation(function($value) {
@@ -158,12 +160,13 @@ final class ArgumentParser_Test extends TestCase
         
         $parser->parse('42');
 
-        $this->assertTrue($parser->has_output());
+        $this->assertTrue($parser->has_error());
         $this->assertEquals(ArgumentParser::INVALID_ARGUMENT, $parser->error_code());
+        $this->assertStringContainsString("Operand 'narf' has an invalid value", $parser->error_message());
     }
 
     /**
-     * @depends test_Unexpected_argument_yields_error_message_output_and_SYNTAX_ERROR_error_code
+     * @depends test_Unexpected_argument_yields_error_message_and_SYNTAX_ERROR_error_code
      */
     public function test_Strict_operands_setting_can_be_overridden_in_constructor(): void
     {
@@ -173,7 +176,7 @@ final class ArgumentParser_Test extends TestCase
         
         $parser->parse(self::NARF . ' Zort!');
 
-        $this->assertFalse($parser->has_output());
+        $this->assertFalse($parser->has_error());
         $this->assertEquals(0, $parser->error_code());
     }
     
@@ -184,23 +187,22 @@ final class ArgumentParser_Test extends TestCase
      */
 
     /**
-     * @depends test_Parser_has_no_output_or_error_on_successful_parsing_of_user_defined_arguments
+     * @depends test_Has_no_error_when_argument_list_is_valid
      */
-    public function test_Parser_output_is_nonerror_help_text_when_help_option_set(): void
+    public function test_Setting_no_info_flags_yields_noninformation_request_and_help_text_as_message(): void
     {
         $parser = new ArgumentParser([]);
 
-        $parser->parse('-h');
+        $parser->parse('');
 
-        $this->assertEquals(0, $parser->error_code());
-        $this->assertTrue($parser->has_output());
-        $this->assertStringContainsString('Usage:', $parser->output());
+        $this->assertFalse($parser->is_information_request());
+        $this->assertStringContainsString('Usage:', $parser->information_message());
     }
 
     /**
-     * @depends test_Parser_output_is_nonerror_help_text_when_help_option_set
+     * @depends test_Setting_no_info_flags_yields_noninformation_request_and_help_text_as_message
      */
-    public function test_Parser_output_is_nonerror_version_string_when_version_option_set_and_help_option_not_set(): void
+    public function test_Setting_version_flag_yields_information_request_with_version_message(): void
     {
         $settings = [
             'script' => self::SCRIPT,
@@ -210,13 +212,26 @@ final class ArgumentParser_Test extends TestCase
 
         $parser->parse('-v');
 
-        $this->assertEquals(0, $parser->error_code());
-        $this->assertTrue($parser->has_output());
-        $this->assertEquals(sprintf('%s: v%s%s', self::SCRIPT, self::VERSION, PHP_EOL), $parser->output());
+        $version = sprintf('%s: v%s', self::SCRIPT, self::VERSION);
+        $this->assertTrue($parser->is_information_request());
+        $this->assertStringContainsString($version, $parser->information_message());
     }
 
     /**
-     * @depends test_Parser_output_is_nonerror_version_string_when_version_option_set_and_help_option_not_set
+     * @depends test_Setting_version_flag_yields_information_request_with_version_message
+     */
+    public function test_Setting_help_flag_yields_information_request_with_help_message(): void
+    {
+        $parser = new ArgumentParser([]);
+
+        $parser->parse('-h');
+
+        $this->assertTrue($parser->is_information_request());
+        $this->assertStringContainsString('Usage:', $parser->information_message());
+    }
+
+    /**
+     * @depends test_Setting_help_flag_yields_information_request_with_help_message
      */
     public function test_Argument_errors_are_supressed_when_help_option_set(): void
     {
