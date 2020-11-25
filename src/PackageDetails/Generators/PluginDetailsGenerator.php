@@ -36,7 +36,6 @@ final class PluginDetailsGenerator extends DetailsGenerator
     protected function additional_data(): array
     {
         return [
-            'slug' => $this->slug(),
             'sections' => $this->section_data(),
         ];
     }

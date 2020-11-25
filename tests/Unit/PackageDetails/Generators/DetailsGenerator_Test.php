@@ -15,6 +15,7 @@ final class Concrete_Generator extends DetailsGenerator
 {
     protected function header_map(): array { return []; }
     protected function additional_data(): array { return []; }
+    protected function slug(): string { return ''; }
     public function _source() { return $this->source(); }
     public function _readme() { return $this->readme(); }
     public function _basename() { return $this->basename(); }
@@ -60,14 +61,9 @@ final class DetailsGenerator_Test extends TestCase
 
     public function setUp(): void
     {
-        // $this->source = $this->createMock(File::class);
-        // $this->readme = $this->createMock(File::class);
         $this->source = new File(self::SOURCE);
         $this->readme = new File(self::README);
         $this->url = new Url(self::URL);
-        // $this->source->method('contents')->willReturn(self::SOURCE_CONTENTS);
-        // $this->readme->method('contents')->willReturn(self::README_CONTENTS);
-        // $this->url->method('__toString')->willReturn(self::URL);
     }
 
     private function createMockGenerator(array $extra_sources = []): DetailsGenerator
@@ -179,6 +175,17 @@ final class DetailsGenerator_Test extends TestCase
         {
             $this->assertArrayHasKey($key, $details, "Failed to assert that the package details contained an expected header '$header'.");
         }
+    }
+
+    public function test_Details_contains_slug_from_child_class(): void
+    {
+        $sut = $this->createMockGenerator();
+        $sut->method('slug')->willReturn('my-plugin');
+
+        $details = $sut->details();
+
+        $this->assertArrayHasKey('slug', $details);
+        $this->assertEquals('my-plugin', $details['slug']);
     }
 
     public function test_Details_contains_data_generated_by_child_class(): void

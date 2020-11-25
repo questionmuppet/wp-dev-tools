@@ -103,4 +103,12 @@ abstract class CreateDetailsController implements ControllerInterface
         $readme = $this->args->option('r');
         return $readme ? new File($readme) : null;
     }
+
+    /**
+     * Get argument parser
+     */
+    protected function args(): ArgumentParser
+    {
+        return $this->args;
+    }
 }

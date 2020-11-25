@@ -70,6 +70,7 @@ abstract class DetailsGenerator
         return array_merge(
             $this->headers(),
             [
+                'slug' => $this->slug(),
                 'last_updated' => time(),
                 'download_link' => $this->download_url(),
             ]
@@ -93,6 +94,11 @@ abstract class DetailsGenerator
      * Map of json keys => header keys
      */
     abstract protected function header_map(): array;
+
+    /**
+     * Unique slug for plugin or theme
+     */
+    abstract protected function slug(): string;
     
     /**
      * Plugin- or theme-specific data
