@@ -18,7 +18,7 @@ require_once(__DIR__ . '/../vendor/autoload.php');
  * Script constants
  */
 define('SCRIPT', 'WP Package Details Generator');
-define('VERSION', '1.0-alpha');
+define('VERSION', '1.0-beta');
 
 /**
  * Script parameters
