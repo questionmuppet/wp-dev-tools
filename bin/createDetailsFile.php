@@ -34,26 +34,42 @@ $options = [
 
     Option::create('u', null, GetOpt::REQUIRED_ARGUMENT)
         ->setArgumentName('download-url')
-        ->setDescription('Url to package location. Used for the "download_url" field in the output.')
+        ->setDescription('Url to package location. Used for the "download_link" field in the output.')
         ->setValidation(function($url) {
             return filter_var($url, FILTER_VALIDATE_URL);
         }, 'Invalid url provided for %s. "%s" does not match a recognized url pattern.'),
 ];
 $operands = [
-    Operand::create('source-file', Operand::REQUIRED)
-        ->setDescription('Plugin or theme file to extract headers from. Will usually be "plugin-name.php" for plugins and "style.css" for themes.')
+    'source' => Operand::create('source-file', Operand::REQUIRED)
+        ->setDescription('Plugin or theme file to extract headers from. Use "plugin-name.php" for plugins and "style.css" for themes.')
         ->setValidation('is_readable', 'Invalid path provided for %s. File "%s" does not exist or cannot be read.'),
 
-    Operand::create('output-file', Operand::OPTIONAL)
-        ->setDescription('Relative path to output file. When omitted defaults to "package-details.json".')
+    'output' => Operand::create('output-file', Operand::OPTIONAL)
+        ->setDescription('Relative path to output file. If omitted defaults to "package-details.json".')
         ->setDefaultValue('package-details.json'),
+
+    'slug' => Operand::create('slug', Operand::REQUIRED)
+        ->setDescription("Unique slug to identify the theme. Should correspond to the name of your theme's root directory."),
 ];
 $commands = [
     Command::create('plugin', Controllers\CreatePluginDetailsController::class)
         ->setShortDescription('Create a package-details file for a plugin release. Try "plugin -h" for more information.')
-        ->setDescription("Create a package-details file from source files.\n\nA plugin source file is required to read headers from. Readme.txt and download_url can be provided optionally.")
+        ->setDescription("Create a package-details file for a plugin release.\n\nA plugin source file is required to read headers from. This is usually your main plugin file in the root directory.\nReadme.txt and download_url can be provided optionally.")
         ->addOptions($options)
-        ->addOperands($operands),
+        ->addOperands([
+            $operands['source'],
+            $operands['output'],
+        ]),
+
+    Command::create('theme', Controllers\CreateThemeDetailsController::class)
+        ->setShortDescription('Create a package-details file for a theme release. Try "theme -h" for more information.')
+        ->setDescription("Create a package-details file for a theme release.\n\nA theme source file is required to read headers from. This is usually style.css in your theme's root directory.\nReadme.txt and download_url can be provided optionally.")
+        ->addOptions($options)
+        ->addOperands([
+            $operands['source'],
+            $operands['slug'],
+            $operands['output'],
+        ]),
 ];
 
 /**
