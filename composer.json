@@ -6,9 +6,7 @@
     "authors": [
         {
             "name": "Jason Schousboe",
-            "email": "jason.schousboe@gmail.com",
-            "homepage": "https://github.com/questionmuppet",
-            "role": "Developer"
+            "email": "jason.schousboe@gmail.com"
         }
     ],
     "require": {
