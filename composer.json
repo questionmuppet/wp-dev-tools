@@ -1,7 +1,19 @@
 {
     "name": "questionmuppet/wp-dev-tools",
     "description": "Command-line tools to assist with WordPress plugin and theme development.",
+    "homepage": "https://github.com/questionmuppet/wp-dev-tools",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Jason Schousboe",
+            "email": "jason.schousboe@gmail.com",
+            "homepage": "https://github.com/questionmuppet",
+            "role": "Developer"
+        }
+    ],
     "require": {
+        "php": "^7.4",
+        "ext-json": "*",
         "ulrichsg/getopt-php": "^3.4"
     },
     "require-dev": {
@@ -17,5 +29,9 @@
         "psr-4": {
             "Wp_Dev_Tools\\Tests\\": "tests/"
         }
-    }
+    },
+    "bin": [
+        "bin/createDetailsFile.php",
+        "bin/createDetailsFile.phar"
+    ]
 }
