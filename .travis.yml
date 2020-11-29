@@ -2,15 +2,18 @@ language: php
 php:
 - 7.4
 install:
+# Project dependencies
 - composer install
+# Phive
 - wget -O phive.phar "https://phar.io/releases/phive.phar"
 - wget -O phive.phar.asc "https://phar.io/releases/phive.phar.asc"
 - gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
 - gpg --verify phive.phar.asc phive.phar
 - rm phive.phar.asc
 - chmod +x phive.phar
-- mv phive.phar /usr/local/bin/phive
-- phive install humbug/box --force-accept-unsigned
+#- mv phive.phar /usr/local/bin/phive
+# Box
+- ./phive install humbug/box --force-accept-unsigned
 script:
 - composer update --no-dev
 - php box.phar compile
