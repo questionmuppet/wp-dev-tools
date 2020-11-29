@@ -13,7 +13,7 @@ install:
 - chmod +x phive.phar
 #- mv phive.phar /usr/local/bin/phive
 # Box
-- ./phive install humbug/box --force-accept-unsigned
+- ./phive.phar install humbug/box --force-accept-unsigned
 script:
 - composer update --no-dev
 - php box.phar compile
