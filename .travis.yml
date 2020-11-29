@@ -11,9 +11,11 @@ install:
 - gpg --verify phive.phar.asc phive.phar
 - rm phive.phar.asc
 - chmod +x phive.phar
-#- mv phive.phar /usr/local/bin/phive
+- sudo mv phive.phar /usr/local/bin/phive
+- phive version
 # Box
-- ./phive.phar install humbug/box --force-accept-unsigned
+- phive install humbug/box --force-accept-unsigned
+- tools/box --version
 script:
 - composer update --no-dev
-- php box.phar compile
+- tools/box compile
