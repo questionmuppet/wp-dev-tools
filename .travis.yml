@@ -9,6 +9,7 @@ install:
 - gpg --verify phive.phar.asc phive.phar
 - rm phive.phar.asc
 - chmod +x phive.phar
+- mv phive.phar /usr/local/bin/phive
 - phive install humbug/box --force-accept-unsigned
 script:
 - composer update --no-dev
