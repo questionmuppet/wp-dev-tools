@@ -19,7 +19,7 @@ install:
 - box --version
 script:
 - composer update --no-dev
-- tools/box compile
+- box compile
 deploy:
   provider: releases
   skip_cleanup: true
