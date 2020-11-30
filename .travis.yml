@@ -15,7 +15,7 @@ install:
 - phive version
 # Box
 - phive install humbug/box --force-accept-unsigned
-- sudo mv box.phar /usr/local/bin/box
+- sudo mv tools/box.phar /usr/local/bin/box
 - box --version
 script:
 - composer update --no-dev
