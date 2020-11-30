@@ -15,7 +15,13 @@ install:
 - phive version
 # Box
 - phive install humbug/box --force-accept-unsigned
-- tools/box --version
+- sudo mv box.phar /usr/local/bin/box
+- box --version
 script:
 - composer update --no-dev
 - tools/box compile
+deploy:
+  provider: releases
+  skip_cleanup: true
+  on:
+    tags: true
