@@ -2,7 +2,9 @@ language: php
 php:
 - 7.4
 install:
+# Vendor dependencies
 - composer install
+# PHIVE
 - wget -O phive.phar "https://phar.io/releases/phive.phar"
 - wget -O phive.phar.asc "https://phar.io/releases/phive.phar.asc"
 - gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
@@ -11,17 +13,23 @@ install:
 - chmod +x phive.phar
 - sudo mv phive.phar /usr/local/bin/phive
 - phive version
+# Box
 - phive install humbug/box --force-accept-unsigned
 - sudo mv tools/box /usr/local/bin/box
 - box --version
 script:
 - composer update --no-dev
 - box compile
+before_deploy:
+- echo "TRAVIS_TAG = $TRAVIS_TAG"
+- echo "Abbrev hash = `git log --format=%h -1`"
+- echo "Date = `date +'%Y%m%d%H%M%S'`"
+- echo "Git name = `git config user.name`"
+- echo "Git email = `git config user.email`"
 deploy:
   provider: releases
-  api_key:
-    secure: NtFayUcRKCifDS74I2PGvhQXaCI0dqUYJYowzr7PczWfaKtdfpeOG7rLuC2NMAWqaK/SjEFcSwaCTXp+gbkNJLRir0xzv7tlkVceEf3q597SjGkaU681jsrYlicmaV3rf6udVQ5T6iXOVj8Xh6VW151p0DkDr/DEceCPSlO2efzaaiQOHI+RzwPx9PgvP4CQpQ5tj4hWNmpMyvZTR519HjanicYYjymnFY4pOI2GrQtjk1D/fUZ6PfOxQalwneLIWxANoEDj4pahfEhZtKZl6BiMC35uNE8ZnGA7ukVJMWPpaduVjACrR/VY08o0LXs+hj0LevZ1GsL4wUAL/9gKgeeRA47Rr3sWyGHeRkDB7sr5Jvz0kxlJChsWCHin3obVtUXMMu8f4CBoHRg+MJRiXIktnUURZx2VGHXxuKsYuSvO64x+r09wql7QMi/SchVKpNZaPd0tZnNzf4voKkWikYPF13uUDOMGSOyv+R1+lrCBx+/pWurPOZVliFh/2ikpjE01Et/YWuvK5I+VmsR/Nm1ussDzUf+tD6CWJUzWRLjV0yylE9frsBH+pLyw+7Arx9S7ZUgnBDWj2+QNMQBiDbIvugU5WrAM8u1C0lrltPC5m9Dy9ItYS286nikMD+FiEVF/S2Y2o6+Q2132uYEvpUI+Jv0trn4Sw9P1PSDpOn0=
+  edge: true
+  token: NtFayUcRKCifDS74I2PGvhQXaCI0dqUYJYowzr7PczWfaKtdfpeOG7rLuC2NMAWqaK/SjEFcSwaCTXp+gbkNJLRir0xzv7tlkVceEf3q597SjGkaU681jsrYlicmaV3rf6udVQ5T6iXOVj8Xh6VW151p0DkDr/DEceCPSlO2efzaaiQOHI+RzwPx9PgvP4CQpQ5tj4hWNmpMyvZTR519HjanicYYjymnFY4pOI2GrQtjk1D/fUZ6PfOxQalwneLIWxANoEDj4pahfEhZtKZl6BiMC35uNE8ZnGA7ukVJMWPpaduVjACrR/VY08o0LXs+hj0LevZ1GsL4wUAL/9gKgeeRA47Rr3sWyGHeRkDB7sr5Jvz0kxlJChsWCHin3obVtUXMMu8f4CBoHRg+MJRiXIktnUURZx2VGHXxuKsYuSvO64x+r09wql7QMi/SchVKpNZaPd0tZnNzf4voKkWikYPF13uUDOMGSOyv+R1+lrCBx+/pWurPOZVliFh/2ikpjE01Et/YWuvK5I+VmsR/Nm1ussDzUf+tD6CWJUzWRLjV0yylE9frsBH+pLyw+7Arx9S7ZUgnBDWj2+QNMQBiDbIvugU5WrAM8u1C0lrltPC5m9Dy9ItYS286nikMD+FiEVF/S2Y2o6+Q2132uYEvpUI+Jv0trn4Sw9P1PSDpOn0=
   file: bin/createDetailsFile.phar
-  skip_cleanup: true
   on:
-    tags: true
+    tags: false
