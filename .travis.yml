@@ -20,10 +20,6 @@ install:
 script:
 - composer update --no-dev
 - box compile
-before_deploy:
-- echo "TRAVIS_TAG = $TRAVIS_TAG"
-- echo "Abbrev hash = `git log --format=%h -1`"
-- echo "Date = `date +%F-%H%M%S`"
 deploy:
   provider: releases
   # edge: true
