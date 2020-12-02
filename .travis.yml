@@ -1,25 +1,28 @@
 language: php
 php:
-- 7.4
+  - 7.4
 install:
-# Vendor dependencies
-- composer install
-# PHIVE
-- wget -O phive.phar "https://phar.io/releases/phive.phar"
-- wget -O phive.phar.asc "https://phar.io/releases/phive.phar.asc"
-- gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
-- gpg --verify phive.phar.asc phive.phar
-- rm phive.phar.asc
-- chmod +x phive.phar
-- sudo mv phive.phar /usr/local/bin/phive
-- phive version
-# Box
-- phive install humbug/box --force-accept-unsigned
-- sudo mv tools/box /usr/local/bin/box
-- box --version
+  # Vendor dependencies
+  - composer install
+  # PHIVE
+  - wget -O phive.phar "https://phar.io/releases/phive.phar"
+  - wget -O phive.phar.asc "https://phar.io/releases/phive.phar.asc"
+  - gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79
+  - gpg --verify phive.phar.asc phive.phar
+  - rm phive.phar.asc
+  - chmod +x phive.phar
+  - sudo mv phive.phar /usr/local/bin/phive
+  - phive version
+  # Box
+  - phive install humbug/box --force-accept-unsigned
+  - sudo mv tools/box /usr/local/bin/box
+  - box --version
 script:
-- composer update --no-dev
-- box compile
+  - composer update --no-dev
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$TRAVIS_TAG/" bin/createDetailsFile.php
+  - box compile
+before_deploy:
+  - export GITHUB_RELEASE_NOTES="Hello"
 deploy:
   provider: releases
   edge: true
