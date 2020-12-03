@@ -23,6 +23,7 @@ script:
   - box compile
 before_deploy:
   - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \[/d' | sed -r '/^\s*$/,$d'`"
+  - export GITHUB_NAME="$TRAVIS_TAG – Dev release `git log --format=%h -1`"
 deploy:
   provider: releases
   edge: true
