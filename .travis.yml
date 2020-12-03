@@ -22,7 +22,7 @@ script:
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$TRAVIS_TAG/" bin/createDetailsFile.php
   - box compile
 before_deploy:
-  - export GITHUB_RELEASE_NOTES="Hello"
+  - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \[/d' | sed -r '/^\s*$/,$d'`"
 deploy:
   provider: releases
   edge: true
