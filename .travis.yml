@@ -1,6 +1,9 @@
 language: php
 php:
   - 7.4
+env:
+  global:
+    VERSION=1.1-dev-12
 install:
   # Vendor dependencies
   - composer install
@@ -18,12 +21,18 @@ install:
   - sudo mv tools/box /usr/local/bin/box
   - box --version
 script:
-  - composer update --no-dev
-  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$TRAVIS_TAG/" bin/createDetailsFile.php
-  - box compile
+  # Run test suites
+  - phpunit --testsuite unit
+  - phpunit --testsuite integration
 before_deploy:
+  # Build package and binaries
+  - composer update --no-dev
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
+  - box compile
+  # Save deployment values
   - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \[/d' | sed -r '/^\s*$/,$d'`"
-  - export GITHUB_NAME="$TRAVIS_TAG – Dev release `git log --format=%h -1`"
+  - export GITHUB_NAME="$VERSION - Dev release `date +%F-%T`"
+  - export TRAVIS_TAG="$VERSION"
 deploy:
   provider: releases
   edge: true
