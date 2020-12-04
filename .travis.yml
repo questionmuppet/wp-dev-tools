@@ -4,6 +4,10 @@ php:
 env:
   global:
     VERSION=1.1-dev-12
+branches:
+  only:
+    - master
+    - develop
 install:
   # Vendor dependencies
   - composer install
@@ -30,9 +34,12 @@ before_deploy:
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
   - box compile
   # Save deployment values
-  - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \[/d' | sed -r '/^\s*$/,$d'`"
-  - export GITHUB_NAME="$VERSION - Dev release `date +%F-%T`"
+  - COMMIT=`git log --format=%h -1`
+  - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
+  - export GITHUB_NAME="$VERSION - Dev release $COMMIT"
   - export TRAVIS_TAG="$VERSION"
+  # Ensure unique tag for this release
+  - [[ ! -z `git tag | grep $VERSION` ]] && TRAVIS_TAG="$TRAVIS_TAG-$COMMIT"
 deploy:
   provider: releases
   edge: true
