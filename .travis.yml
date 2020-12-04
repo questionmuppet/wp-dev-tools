@@ -3,6 +3,7 @@ php:
   - 7.4
 env:
   global:
+    PACKAGE=wp-dev-tools
     VERSION=1.1-dev-12
 branches:
   only:
@@ -33,9 +34,9 @@ before_deploy:
   - composer update --no-dev
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
   - box compile
-  - mkdir $VERSION
+  - mkdir $PACKAGE
   # Prepare release information
-  - if [[ "master" == "$TRAVIS_BRANCH" ]];
+  - if [[ "master" == "$TRAVIS_BRANCH" ]]
   - then
   -   #[[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
   -   NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
