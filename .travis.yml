@@ -34,6 +34,7 @@ before_deploy:
   - composer update --no-dev
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
   - box compile
+  - rm -rf $PACKAGE || exit 0
   - mkdir $PACKAGE
   - cp LICENSE $PACKAGE/
   - tar -czf $PACKAGE-$TRAVIS_TAG.tar.gz $PACKAGE
