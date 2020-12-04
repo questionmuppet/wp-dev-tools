@@ -38,9 +38,9 @@ before_deploy:
   - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
   - export GITHUB_NAME="$VERSION - Dev release $COMMIT"
   - export TRAVIS_TAG="$VERSION"
-  # Ensure unique tag for this release
+  # For extant tag, append unix timestamp in milliseconds
   - |
-    [[ ! -z `git tag | grep $VERSION` ]] && TRAVIS_TAG="$TRAVIS_TAG-$COMMIT"
+    [[ ! -z `git tag | grep $VERSION` ]] && TRAVIS_TAG="$TRAVIS_TAG-`date +%s%3N`"
 deploy:
   provider: releases
   edge: true
