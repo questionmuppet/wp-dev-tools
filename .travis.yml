@@ -33,14 +33,21 @@ before_deploy:
   - composer update --no-dev
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
   - box compile
-  # Save deployment values
-  - COMMIT=`git log --format=%h -1`
-  - export GITHUB_RELEASE_NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
-  - export GITHUB_NAME="$VERSION - Dev release $COMMIT"
-  - export TRAVIS_TAG="$VERSION"
-  # For extant tag, append unix timestamp in milliseconds
+  # Prepare release information
   - |
-    [[ ! -z `git tag | grep $VERSION` ]] && TRAVIS_TAG="$TRAVIS_TAG-`date +%s%3N`"
+    if [[ "master" == "$TRAVIS_BRANCH" ]];
+    then
+      [[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
+      NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
+    else
+      VERSION="$VERSION-`date +%s%3N`"
+      NOTES="Development build deployed on `date +%F-%T`"
+      export GITHUB_PRERELEASE="true"
+    fi
+  # Save deployment values
+  - export TRAVIS_TAG="$VERSION"
+  - export GITHUB_NAME="$VERSION"
+  - export GITHUB_RELEASE_NOTES="$NOTES"
 deploy:
   provider: releases
   edge: true
