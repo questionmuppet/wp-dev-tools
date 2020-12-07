@@ -43,7 +43,7 @@ before_deploy:
     fi
   # Build package and binaries
   - composer update --no-dev
-  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$VERSION/" bin/createDetailsFile.php
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1${VERSION/#v/}/" bin/createDetailsFile.php
   - box compile
   - rm -rf $PACKAGE || exit 0
   - mkdir $PACKAGE
