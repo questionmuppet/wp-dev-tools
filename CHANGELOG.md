@@ -1,6 +1,10 @@
 # WP Developer Tools
 This file documents all major changes to WP Dev Tools. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2020-12-07
+### Fixed
+* Various bugfixes to deployment script
+
 ## [1.1] - 2020-12-07
 ### Added
 * Travis CI deployment for automatic releases

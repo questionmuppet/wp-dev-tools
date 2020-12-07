@@ -4,7 +4,7 @@ php:
 env:
   global:
     PACKAGE=wp-dev-tools
-    VERSION=v1.1
+    VERSION=v1.1.1
 branches:
   only:
     - master
@@ -30,12 +30,14 @@ script:
   - phpunit --testsuite unit
   - phpunit --testsuite integration
 before_deploy:
+  # Generate version number without leading 'v'
+  - NUM_VERSION="${VERSION/#v/}"
   # Prepare release information
   - |
     if [[ "master" == "$TRAVIS_BRANCH" ]]
     then
       #[[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
-      NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
+      NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
     else
       VERSION="$VERSION-`date +%s%3N`"
       NOTES="Development build deployed on `date +%F-%T`"
@@ -43,7 +45,7 @@ before_deploy:
     fi
   # Build package and binaries
   - composer update --no-dev
-  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1${VERSION/#v/}/" bin/createDetailsFile.php
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
   - box compile
   - rm -rf $PACKAGE || exit 0
   - mkdir $PACKAGE
