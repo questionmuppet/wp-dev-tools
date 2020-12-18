@@ -24,6 +24,10 @@ define('VERSION', '@git_tag@');
  * Script parameters
  */
 $options = [
+    Option::create('d', 'date-format', GetOpt::REQUIRED_ARGUMENT)
+        ->setArgumentName('format')
+        ->setDescription('Datetime format to use for the "last_updated" field in the output. See https://www.php.net/manual/en/datetime.format.php for possible values.'),
+        
     Option::create('p', 'pretty-print')
         ->setDescription('Prettify the JSON formatting in the output file.'),
     

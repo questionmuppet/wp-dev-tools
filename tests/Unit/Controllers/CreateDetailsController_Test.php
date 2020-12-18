@@ -26,10 +26,12 @@ final class CreateDetailsController_Test extends TestCase
     const OUTPUT_FILE = 'details-test.json';
     const OUTPUT = self::OUTPUT_DIR . self::OUTPUT_FILE;
 
+    const DATE_FORMAT = DATE_RFC7231;
     const JSON = '{"key": "value"}';
     const PRETTY_JSON = "{\n\"key\": \"value\"\n}";
 
     private array $default_input_args = [
+        'date-format' => self::DATE_FORMAT,
         'pretty-print' => false,
         'u' => self::URL,
         'r' => self::README,
@@ -60,6 +62,7 @@ final class CreateDetailsController_Test extends TestCase
     private function createMockParser(array $params = []): ArgumentParser
     {
         $options = array_intersect_key($params, [
+            'date-format' => '',
             'pretty-print' => '',
             'u' => '',
             'r' => '',
@@ -114,6 +117,7 @@ final class CreateDetailsController_Test extends TestCase
                 $this->equalTo([
                     'url' => new Url(self::URL),
                     'readme' => new File(self::README),
+                    'date_format' => self::DATE_FORMAT,
                 ])
             );
 
@@ -157,6 +161,27 @@ final class CreateDetailsController_Test extends TestCase
             ->with(
                 $this->anything(),
                 $this->logicalNot($this->arrayHasKey('readme'))
+            );
+
+        $sut->execute($args);
+    }
+
+    /**
+     * @depends test_Execute_passes_all_sources_to_child_class_generator_method
+     */
+    public function test_Date_format_is_omitted_when_not_set_in_ArgumentParser(): void
+    {
+        $inputs = $this->default_input_args;
+        unset($inputs['date-format']);
+        $args = $this->createMockParser($inputs);
+        $sut = $this->controller;
+
+        $this->controller
+            ->expects($this->once())
+            ->method('generator')
+            ->with(
+                $this->anything(),
+                $this->logicalNot($this->arrayHasKey('date_format'))
             );
 
         $sut->execute($args);

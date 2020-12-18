@@ -18,6 +18,12 @@ abstract class DetailsGenerator
     private File $source;
     private ?File $readme;
     private ?Url $url;
+    
+    /**
+     * Timestamp
+     */
+    private string $date_format;
+    private string $default_date_format = DATE_RFC7231;
 
     /**
      * Package details
@@ -32,6 +38,7 @@ abstract class DetailsGenerator
         $this->source = $source;
         $this->readme = $extra_sources['readme'] ?? null;
         $this->url = $extra_sources['url'] ?? null;
+        $this->date_format = $extra_sources['date_format'] ?? $this->default_date_format;
     }
 
     /**
@@ -71,7 +78,7 @@ abstract class DetailsGenerator
             $this->headers(),
             [
                 'slug' => $this->slug(),
-                'last_updated' => time(),
+                'last_updated' => $this->current_time(),
                 'download_link' => $this->download_url(),
             ]
         );
@@ -145,6 +152,20 @@ abstract class DetailsGenerator
             $sections[$key] = $content;
         }
         return $sections;
+    }
+
+    /**
+     * ---------------------
+     *   T I M E S T A M P
+     * ---------------------
+     */
+
+    /**
+     * Get the current timestamp as a human-readable string
+     */
+    private function current_time(): string
+    {
+        return date($this->date_format);
     }
 
     /**

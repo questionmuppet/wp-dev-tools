@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Wp_Dev_Tools\Data\File;
 use Wp_Dev_Tools\Data\Url;
 use Wp_Dev_Tools\PackageDetails\Generators\DetailsGenerator;
+use DateTime;
 
 /**
  * Concrete implementation of abstract
@@ -229,9 +230,23 @@ final class DetailsGenerator_Test extends TestCase
         $sut = $this->createMockGenerator();
 
         $details = $sut->details();
+        $date = new DateTime($details['last_updated']);
 
         $this->assertArrayHasKey('last_updated', $details);
-        $this->assertEqualsWithDelta(time(), $details['last_updated'], 5);
+        $this->assertEqualsWithDelta(time(), $date->getTimestamp(), 5);
+    }
+
+    /**
+     * @depends test_Details_contains_last_updated_field_with_current_timestamp
+     */
+    public function test_Date_format_can_be_overridden_in_constructor(): void
+    {
+        $format = 'Y-M-d';
+        $sut = $this->createMockGenerator(['date_format' => $format]);
+
+        $details = $sut->details();
+        
+        $this->assertEquals(date($format), $details['last_updated']);
     }
 
     /**

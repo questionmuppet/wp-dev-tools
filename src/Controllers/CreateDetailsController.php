@@ -67,6 +67,7 @@ abstract class CreateDetailsController implements ControllerInterface
         return array_filter([
             'url' => $this->url(),
             'readme' => $this->readme(),
+            'date_format' => $this->date_format(),
         ]);
     }
 
@@ -102,6 +103,14 @@ abstract class CreateDetailsController implements ControllerInterface
     {
         $readme = $this->args->option('r');
         return $readme ? new File($readme) : null;
+    }
+
+    /**
+     * Datetime display format
+     */
+    private function date_format(): ?string
+    {
+        return $this->args->option('date-format') ?? null;
     }
 
     /**
