@@ -4,7 +4,7 @@ php:
 env:
   global:
     PACKAGE=wp-dev-tools
-    VERSION=v1.1.2
+    VERSION=v1.2.0
 branches:
   only:
     - master
