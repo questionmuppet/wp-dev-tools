@@ -1,6 +1,10 @@
 # WP Developer Tools
 This file documents all major changes to WP Dev Tools. This project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - Unreleased
+### Changed
+* Updated required PHP version to ^8.2
+
 ## [1.2.0] - 2020-12-18
 ### Added
 * Added datetime formatting option to package-details create script
