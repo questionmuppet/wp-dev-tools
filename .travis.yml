@@ -1,10 +1,10 @@
 language: php
 php:
-  - 7.4
+  - 8.2
 env:
   global:
     PACKAGE=wp-dev-tools
-    VERSION=v1.2.0
+    VERSION=v1.2.1
 branches:
   only:
     - master
