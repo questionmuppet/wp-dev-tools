@@ -49,7 +49,7 @@ before_deploy:
       export GITHUB_PRERELEASE="true"
     fi
   # Build package and binaries
-  - composer update --no-dev
+  - composer update --no-dev --optimize-autoloader
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
   - box compile
   - rm -rf $PACKAGE || exit 0
