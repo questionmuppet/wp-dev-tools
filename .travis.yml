@@ -32,8 +32,8 @@ install:
   - box --version
 script:
   # Run test suites
-  - phpunit --testsuite unit
-  - phpunit --testsuite integration
+  - vendor/bin/phpunit --testsuite unit
+  - vendor/bin/phpunit --testsuite integration
 before_deploy:
   # Generate version number without leading 'v'
   - NUM_VERSION="${VERSION/#v/}"
