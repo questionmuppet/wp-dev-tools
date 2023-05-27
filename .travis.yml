@@ -28,7 +28,7 @@ install:
   - sudo mv phive.phar /usr/local/bin/phive
   - phive version
   # Box
-  - phive install humbug/box --yes --force-accept-unsigned
+  - yes | phive install humbug/box --force-accept-unsigned
   - sudo mv tools/box /usr/local/bin/box
   - box --version
 script:
