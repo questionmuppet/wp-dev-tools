@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e189d99bae249934fc36e9c121a42d2c",
+    "content-hash": "8d51a6fc7876cd7efef668d7c700749b",
     "packages": [
         {
             "name": "ulrichsg/getopt-php",
@@ -1849,7 +1849,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2",
+        "php": "^8.1",
         "ext-json": "*"
     },
     "platform-dev": [],
