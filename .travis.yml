@@ -1,6 +1,6 @@
 language: php
 php:
-  - 8.2
+  - 8.1
 env:
   global:
     PACKAGE=wp-dev-tools
@@ -12,12 +12,9 @@ branches:
 matrix:
   include: 
   - dist: jammy
-    php: 8.2
-    env: LIBONIG_INSTALL=1
+    php: 8.1
 
 install:
-  # for PHP 8.2 install libonig
-  - if [ -n "$LIBONIG_INSTALL" ]; then sudo apt-get install libonig5; fi
   # Vendor dependencies
   - composer install
   # PHIVE

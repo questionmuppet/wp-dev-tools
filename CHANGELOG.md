@@ -3,7 +3,7 @@ This file documents all major changes to WP Dev Tools. This project adheres to [
 
 ## [1.2.1] - 2023-05-22
 ### Changed
-* Updated required PHP version to ^8.2
+* Updated required PHP version to ^8.1
 
 ## [1.2.0] - 2020-12-18
 ### Added
