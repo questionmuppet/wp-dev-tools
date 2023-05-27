@@ -11,7 +11,7 @@ branches:
     - develop
 matrix:
   include: 
-  - dist: jammy
+  - dist: focal
     php: 8.1
 
 install:
