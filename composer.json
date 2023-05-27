@@ -13,7 +13,7 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "ulrichsg/getopt-php": "^3.4"
+        "ulrichsg/getopt-php": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.6.8",
