@@ -142,7 +142,11 @@ abstract class DetailsGenerator
     protected function section_data(): array
     {
         $pattern = '/^\s*==([^=]+)==\s*$/m';
-        $matches = preg_split($pattern, $this->readme(), null, PREG_SPLIT_DELIM_CAPTURE);
+        $matches = preg_split(
+            pattern: $pattern,
+            subject: $this->readme(),
+            flags: PREG_SPLIT_DELIM_CAPTURE
+        );
 
         $sections = [];
         for ($i = 1; $i < count($matches); $i += 2)
