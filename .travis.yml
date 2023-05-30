@@ -1,4 +1,7 @@
 language: php
+os:
+  - linux
+dist: jammy
 php:
   - 8.1
 env:
@@ -10,8 +13,8 @@ branches:
     - master
     - develop
 matrix:
-  include: 
-  - dist: focal
+  include:
+    dist: jammy
     php: 8.1
 
 install:
@@ -41,7 +44,7 @@ before_deploy:
   - |
     if [[ "master" == "$TRAVIS_BRANCH" ]]
     then
-      #[[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
+      [[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
       NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
     else
       VERSION="$VERSION-`date +%s%3N`"
@@ -71,10 +74,11 @@ deploy:
   provider: releases
   edge: true
   api_key:
-    secure: NtFayUcRKCifDS74I2PGvhQXaCI0dqUYJYowzr7PczWfaKtdfpeOG7rLuC2NMAWqaK/SjEFcSwaCTXp+gbkNJLRir0xzv7tlkVceEf3q597SjGkaU681jsrYlicmaV3rf6udVQ5T6iXOVj8Xh6VW151p0DkDr/DEceCPSlO2efzaaiQOHI+RzwPx9PgvP4CQpQ5tj4hWNmpMyvZTR519HjanicYYjymnFY4pOI2GrQtjk1D/fUZ6PfOxQalwneLIWxANoEDj4pahfEhZtKZl6BiMC35uNE8ZnGA7ukVJMWPpaduVjACrR/VY08o0LXs+hj0LevZ1GsL4wUAL/9gKgeeRA47Rr3sWyGHeRkDB7sr5Jvz0kxlJChsWCHin3obVtUXMMu8f4CBoHRg+MJRiXIktnUURZx2VGHXxuKsYuSvO64x+r09wql7QMi/SchVKpNZaPd0tZnNzf4voKkWikYPF13uUDOMGSOyv+R1+lrCBx+/pWurPOZVliFh/2ikpjE01Et/YWuvK5I+VmsR/Nm1ussDzUf+tD6CWJUzWRLjV0yylE9frsBH+pLyw+7Arx9S7ZUgnBDWj2+QNMQBiDbIvugU5WrAM8u1C0lrltPC5m9Dy9ItYS286nikMD+FiEVF/S2Y2o6+Q2132uYEvpUI+Jv0trn4Sw9P1PSDpOn0=
+    secure: "f5NSKLCYaKaX0IYLE0INUCklRfRN4Rydc3kZFPnWAgYfiZNxi0gWjcaB7QoFuK6aQzVOPUwWRaiA97xzMC+9OPsIshYBew7ThI3KhQ33uLxfrHHV0qz1Dh7xmASWCXV7NH6cBQwM2AqjHnzkd+nNXoqIEYBuVjZxVioM4ep1N9Sj0dbrHU3AZmxhwQng0SDG6hUnuLxr0f7Sdng5yDW11pmFZm+b+LsZ57rs82Pfb10QNNlFewnd3EYvEugv9GWxSlewibR4eyoP9F8yu9BnasqkuCphIlQXwzGaE+CQupvJaXzR+oA8LYvnQPpcx1eiLQ520omX4QmZdDojzPJIbGL73TkxZHWR0hv0l4EEkWWE8ygOO8gf8sGXIY6HieISioOO2hjTzwrjLS8R1vjnPjX1TJMpFZSYAHggB63xIuG5Wj86CZjaQXezIUq2kKFmFYrfswkD/MpPzSLH2wJg931ZrdpMVCAmy8E0w2d9lc3X/eO8WjnkGjkKZru6kGYj6OW7kejRm/k3rrsqMfafJ6QaKE6MnhyA068jLCyD2bIfImaUkAUdRF6lm4GsbgD97WfNppGac7PPl8Yab+SETm9tVmB52Yd1w1vo8m4SulmVpm+d0+DhOc86kSregLigqZXdFnecsUi71oeFRIdyOmoitWM3RAsji2wA/Au7t/8="
   file:
     - bin/createDetailsFile.phar
     - $FILENAME.tar.gz
     - $FILENAME.zip
+  skip_cleanup: true
   on:
     all_branches: true
