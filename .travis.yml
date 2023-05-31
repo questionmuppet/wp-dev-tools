@@ -18,6 +18,8 @@ jobs:
     php: 8.1
 
 install:
+  # Ruby
+  - gem update mime-types
   # Vendor dependencies
   - composer install
   # PHIVE
