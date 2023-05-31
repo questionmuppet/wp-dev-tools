@@ -16,7 +16,6 @@ jobs:
   include:
     dist: jammy
     php: 8.1
-    ruby: 3.2.2
 
 install:
   # Vendor dependencies
@@ -67,10 +66,11 @@ before_deploy:
   - export GITHUB_NAME="$VERSION"
   - export GITHUB_RELEASE_NOTES="$NOTES"
 deploy:
-  provider: releases
+  # Enable dpl v2
   edge: true
+  provider: releases
   token:
-    secure: "f5NSKLCYaKaX0IYLE0INUCklRfRN4Rydc3kZFPnWAgYfiZNxi0gWjcaB7QoFuK6aQzVOPUwWRaiA97xzMC+9OPsIshYBew7ThI3KhQ33uLxfrHHV0qz1Dh7xmASWCXV7NH6cBQwM2AqjHnzkd+nNXoqIEYBuVjZxVioM4ep1N9Sj0dbrHU3AZmxhwQng0SDG6hUnuLxr0f7Sdng5yDW11pmFZm+b+LsZ57rs82Pfb10QNNlFewnd3EYvEugv9GWxSlewibR4eyoP9F8yu9BnasqkuCphIlQXwzGaE+CQupvJaXzR+oA8LYvnQPpcx1eiLQ520omX4QmZdDojzPJIbGL73TkxZHWR0hv0l4EEkWWE8ygOO8gf8sGXIY6HieISioOO2hjTzwrjLS8R1vjnPjX1TJMpFZSYAHggB63xIuG5Wj86CZjaQXezIUq2kKFmFYrfswkD/MpPzSLH2wJg931ZrdpMVCAmy8E0w2d9lc3X/eO8WjnkGjkKZru6kGYj6OW7kejRm/k3rrsqMfafJ6QaKE6MnhyA068jLCyD2bIfImaUkAUdRF6lm4GsbgD97WfNppGac7PPl8Yab+SETm9tVmB52Yd1w1vo8m4SulmVpm+d0+DhOc86kSregLigqZXdFnecsUi71oeFRIdyOmoitWM3RAsji2wA/Au7t/8="
+    secure: f5NSKLCYaKaX0IYLE0INUCklRfRN4Rydc3kZFPnWAgYfiZNxi0gWjcaB7QoFuK6aQzVOPUwWRaiA97xzMC+9OPsIshYBew7ThI3KhQ33uLxfrHHV0qz1Dh7xmASWCXV7NH6cBQwM2AqjHnzkd+nNXoqIEYBuVjZxVioM4ep1N9Sj0dbrHU3AZmxhwQng0SDG6hUnuLxr0f7Sdng5yDW11pmFZm+b+LsZ57rs82Pfb10QNNlFewnd3EYvEugv9GWxSlewibR4eyoP9F8yu9BnasqkuCphIlQXwzGaE+CQupvJaXzR+oA8LYvnQPpcx1eiLQ520omX4QmZdDojzPJIbGL73TkxZHWR0hv0l4EEkWWE8ygOO8gf8sGXIY6HieISioOO2hjTzwrjLS8R1vjnPjX1TJMpFZSYAHggB63xIuG5Wj86CZjaQXezIUq2kKFmFYrfswkD/MpPzSLH2wJg931ZrdpMVCAmy8E0w2d9lc3X/eO8WjnkGjkKZru6kGYj6OW7kejRm/k3rrsqMfafJ6QaKE6MnhyA068jLCyD2bIfImaUkAUdRF6lm4GsbgD97WfNppGac7PPl8Yab+SETm9tVmB52Yd1w1vo8m4SulmVpm+d0+DhOc86kSregLigqZXdFnecsUi71oeFRIdyOmoitWM3RAsji2wA/Au7t/8=
   file:
     - bin/createDetailsFile.phar
     - $FILENAME.tar.gz
