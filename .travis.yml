@@ -19,7 +19,7 @@ jobs:
 
 install:
   # Ruby
-  - gem update mime-types
+  - gem install mime-types
   # Vendor dependencies
   - composer install
   # PHIVE
