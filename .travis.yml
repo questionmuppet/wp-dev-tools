@@ -42,10 +42,10 @@ before_deploy:
   - NUM_VERSION="${VERSION/#v/}"
   # Prepare release information
   # Development
-  - [[ "master" !== "$TRAVIS_BRANCH" ]] && { VERSION="$VERSION-`date +%s%3N`"; NOTES="Development build deployed on `date +%F-%T`"; export GITHUB_PRERELEASE="true" }
+  #- [[ "master" !== "$TRAVIS_BRANCH" ]] && { VERSION="$VERSION-`date +%s%3N`"; NOTES="Development build deployed on `date +%F-%T`"; export GITHUB_PRERELEASE="true" }
   # Production
   - [[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy release because current tag already exists."; exit 1 }
-  - [[ -z "$NOTES" ]] && NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
+  #- [[ -z "$NOTES" ]] && NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
   # Build package and binaries
   - composer update --no-dev --optimize-autoloader
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
