@@ -46,7 +46,10 @@ before_deploy:
     then
       [[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy to master because current tag already exists."; exit 1 }
       NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
-    else
+    fi
+  - |
+    if [[ "master" !== "$TRAVIS_BRANCH" ]]
+    then
       VERSION="$VERSION-`date +%s%3N`"
       NOTES="Development build deployed on `date +%F-%T`"
       export GITHUB_PRERELEASE="true"
