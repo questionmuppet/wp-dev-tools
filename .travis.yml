@@ -28,6 +28,7 @@ script:
 before_deploy:
   # Generate version number without leading 'v'
   - NUM_VERSION="${VERSION/#v/}"
+  - NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
   # Build package and binaries
   - composer install --no-dev --optimize-autoloader
   - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
