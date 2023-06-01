@@ -1,6 +1,10 @@
 language: php
 php:
 - '8.1'
+env:
+  global:
+  - PACKAGE=wp-dev-tools
+  - VERSION=v1.2.1
 install:
   # Vendor dependencies
   - composer install
