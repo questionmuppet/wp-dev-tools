@@ -1,6 +1,9 @@
 language: php
 php:
 - '8.1'
+install:
+  # Vendor dependencies
+  - composer install
 deploy:
   provider: releases
   api_key:
