@@ -5,6 +5,9 @@ env:
   global:
   - PACKAGE=wp-dev-tools
   - VERSION=v1.2.1
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install gnupg
 install:
   # Vendor dependencies
   - composer install
