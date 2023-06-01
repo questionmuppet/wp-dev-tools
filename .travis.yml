@@ -51,7 +51,10 @@ deploy:
   provider: releases
   api_key:
     secure: gmbdlpI4Mgnpz5mBuUqyjRW+0wtsJk4H19mrlsthOoxWFAb1ypfseQSmup01Ezj2HBa9E1GkA3xvIE46bwK2JJy8y3k+ev131DVWzFsMUr6ye/5BPlviWW9N7UA+KcTlqExCUarYHlk3ZqTdaEZZ7mkByWsq3mbH57CB99hue0HYegyALfQ9AzbOr5Ffc3Vhgh/GCWfwDHqhr6hFsrapTUaFnCdtpRZjCAJ5nfB4gByukElB4DgMLXv7vvQQU3UO3hz1DsdG2T28BU8zMhDQq8BP3gemDCrGrV1hofMCAYuWvDN+NCK5VRGcfHwweq3t4p9ZEo5Tz1XhQMcqAjRsqClBnCJUYIMHYgTOWyr3aYBKKrr3nsj26h/Y5giVyiUX5p9bm87ahNlb53eyVENAy7NRO37hU15+hSfQ6Tav40Jr45ys0/e+oy04LM111VV6lDq5cr+1NRlUqMCZY6QWVtqB4dQYW6k7kXwr16u9KimPq0pB/AZ1+Sz2N+ryWyFugo6daSDaI8e+6CKNKVRFUVg7PtFC2Q5DqmLwaBHulYYCq65hSnqqZqNWf4JT8ze53AoPabw2QG/CRNdXU3+IpZzFCP/j4zEt2A+u1MmwxAsmY6A3DbU55z2AQ4Z1G5P5kcWtzBXI8aGk90oKdksKHyPYUAvxL3FQhMkrq9+cx4Q=
-  file: README.md
+  file:
+    - bin/createDetailsFile.phar
+    - $FILENAME.tar.gz
+    - $FILENAME.zip
   on:
     repo: questionmuppet/wp-dev-tools
   skip_cleanup: 'true'
