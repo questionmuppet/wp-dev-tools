@@ -17,6 +17,10 @@ install:
   - chmod +x phive.phar
   - sudo mv phive.phar /usr/local/bin/phive
   - phive version
+  # Box
+  - yes | phive install humbug/box --force-accept-unsigned
+  - sudo mv tools/box /usr/local/bin/box
+  - box --version
 deploy:
   provider: releases
   api_key:
