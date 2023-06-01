@@ -1,0 +1,79 @@
+language: php
+os:
+  - linux
+dist: jammy
+php:
+  - 8.1
+env:
+  global:
+    PACKAGE=wp-dev-tools
+    VERSION=v1.2.1
+branches:
+  only:
+    - master
+    - develop
+jobs:
+  include:
+    dist: jammy
+    php: 8.1
+
+install:
+  # Vendor dependencies
+  - composer install
+  # PHIVE
+  - wget -O phive.phar "https://phar.io/releases/phive.phar"
+  - wget -O phive.phar.asc "https://phar.io/releases/phive.phar.asc"
+  - gpg --yes --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
+  - gpg --verify phive.phar.asc phive.phar
+  - rm phive.phar.asc
+  - chmod +x phive.phar
+  - sudo mv phive.phar /usr/local/bin/phive
+  - phive version
+  # Box
+  - yes | phive install humbug/box --force-accept-unsigned
+  - sudo mv tools/box /usr/local/bin/box
+  - box --version
+script:
+  # Run test suites
+  - vendor/bin/phpunit --testsuite unit
+  - vendor/bin/phpunit --testsuite integration
+before_deploy:
+  # Generate version number without leading 'v'
+  - NUM_VERSION="${VERSION/#v/}"
+  # Prepare release information
+  # Development
+  #- [[ "master" !== "$TRAVIS_BRANCH" ]] && { VERSION="$VERSION-`date +%s%3N`"; NOTES="Development build deployed on `date +%F-%T`"; export GITHUB_PRERELEASE="true" }
+  # Production
+  #- [[ -n `git tag | grep $VERSION` ]] && { echo "Error: cannot deploy release because current tag already exists."; exit 1 }
+  #- [[ -z "$NOTES" ]] && NOTES="`cat CHANGELOG.md | sed -r '0,/^## \['$NUM_VERSION'\]/d' | sed -r '/^\s*$/,$d'`"
+  # Build package and binaries
+  - composer update --no-dev --optimize-autoloader
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
+  - box compile
+  - rm -rf $PACKAGE || exit 0
+  - mkdir $PACKAGE
+  - cp -a ./bin $PACKAGE/
+  - cp -a ./src $PACKAGE/
+  - cp -a ./vendor $PACKAGE/
+  - cp CHANGELOG.md $PACKAGE/
+  - cp LICENSE $PACKAGE/
+  - cp README.md $PACKAGE/
+  - FILENAME=$PACKAGE-$VERSION
+  - tar -czf $FILENAME.tar.gz $PACKAGE
+  - zip -r $FILENAME.zip $PACKAGE
+  # Save deployment values
+  - export TRAVIS_TAG="$VERSION"
+  - export GITHUB_NAME="$VERSION"
+  - export GITHUB_RELEASE_NOTES="$NOTES"
+deploy:
+  # Enable dpl v2
+  edge: true
+  provider: releases
+  token:
+    secure: f5NSKLCYaKaX0IYLE0INUCklRfRN4Rydc3kZFPnWAgYfiZNxi0gWjcaB7QoFuK6aQzVOPUwWRaiA97xzMC+9OPsIshYBew7ThI3KhQ33uLxfrHHV0qz1Dh7xmASWCXV7NH6cBQwM2AqjHnzkd+nNXoqIEYBuVjZxVioM4ep1N9Sj0dbrHU3AZmxhwQng0SDG6hUnuLxr0f7Sdng5yDW11pmFZm+b+LsZ57rs82Pfb10QNNlFewnd3EYvEugv9GWxSlewibR4eyoP9F8yu9BnasqkuCphIlQXwzGaE+CQupvJaXzR+oA8LYvnQPpcx1eiLQ520omX4QmZdDojzPJIbGL73TkxZHWR0hv0l4EEkWWE8ygOO8gf8sGXIY6HieISioOO2hjTzwrjLS8R1vjnPjX1TJMpFZSYAHggB63xIuG5Wj86CZjaQXezIUq2kKFmFYrfswkD/MpPzSLH2wJg931ZrdpMVCAmy8E0w2d9lc3X/eO8WjnkGjkKZru6kGYj6OW7kejRm/k3rrsqMfafJ6QaKE6MnhyA068jLCyD2bIfImaUkAUdRF6lm4GsbgD97WfNppGac7PPl8Yab+SETm9tVmB52Yd1w1vo8m4SulmVpm+d0+DhOc86kSregLigqZXdFnecsUi71oeFRIdyOmoitWM3RAsji2wA/Au7t/8=
+  file:
+    - bin/createDetailsFile.phar
+    - $FILENAME.tar.gz
+    - $FILENAME.zip
+  on:
+    all_branches: true
