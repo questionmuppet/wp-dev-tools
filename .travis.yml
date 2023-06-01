@@ -1,5 +1,5 @@
 language: php
-dist: jammy
+dist: focal
 php:
 - '8.1'
 - '8.2'
