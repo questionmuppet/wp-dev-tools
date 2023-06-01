@@ -25,6 +25,9 @@ script:
   # Run test suites
   - vendor/bin/phpunit --testsuite unit
   - vendor/bin/phpunit --testsuite integration
+before_deploy:
+  # Generate version number without leading 'v'
+  - NUM_VERSION="${VERSION/#v/}"
 deploy:
   provider: releases
   api_key:
