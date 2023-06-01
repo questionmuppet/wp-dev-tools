@@ -28,6 +28,21 @@ script:
 before_deploy:
   # Generate version number without leading 'v'
   - NUM_VERSION="${VERSION/#v/}"
+  # Build package and binaries
+  - composer install --no-dev --optimize-autoloader
+  - sed -i -r "s/(VERSION.*)(@git_tag@)/\1$NUM_VERSION/" bin/createDetailsFile.php
+  - box compile
+  - rm -rf $PACKAGE || exit 0
+  - mkdir $PACKAGE
+  - cp -a ./bin $PACKAGE/
+  - cp -a ./src $PACKAGE/
+  - cp -a ./vendor $PACKAGE/
+  - cp CHANGELOG.md $PACKAGE/
+  - cp LICENSE $PACKAGE/
+  - cp README.md $PACKAGE/
+  - FILENAME=$PACKAGE-$VERSION
+  - tar -czf $FILENAME.tar.gz $PACKAGE
+  - zip -r $FILENAME.zip $PACKAGE
 deploy:
   provider: releases
   api_key:
