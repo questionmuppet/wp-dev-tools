@@ -43,6 +43,10 @@ before_deploy:
   - FILENAME=$PACKAGE-$VERSION
   - tar -czf $FILENAME.tar.gz $PACKAGE
   - zip -r $FILENAME.zip $PACKAGE
+  # Save deployment values
+  - export TRAVIS_TAG="$VERSION"
+  - export GITHUB_NAME="$VERSION"
+  - export GITHUB_RELEASE_NOTES="$NOTES"
 deploy:
   provider: releases
   api_key:
