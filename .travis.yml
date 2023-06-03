@@ -7,6 +7,10 @@ env:
   global:
   - PACKAGE=wp-dev-tools
   - VERSION=v1.2.1
+addons:
+  apt:
+    packages:
+    - libonig5
 install:
   # Vendor dependencies
   - composer install
